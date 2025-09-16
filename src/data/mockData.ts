@@ -411,3 +411,104 @@ const generateActivityData = () => {
 };
 
 export const mockActivityData = generateActivityData();
+
+// Mock social media style posts for gym feed
+export interface SocialComment {
+  id: number;
+  userId: number; // reference to user id among mockUsers or derived roles
+  userName: string;
+  userAvatar?: string;
+  content: string;
+  createdAt: string; // ISO
+}
+
+export interface SocialPost {
+  id: number;
+  userId: number;
+  userName: string;
+  userAvatar?: string;
+  role: string;
+  gym: string;
+  content: string;
+  image?: string;
+  likes: number;
+  likedByCurrentUser?: boolean;
+  comments: SocialComment[];
+  createdAt: string;
+}
+
+export const mockSocialPosts: SocialPost[] = [
+  {
+    id: 1,
+    userId: mockUsers.trainer.id,
+    userName: mockUsers.trainer.name,
+    userAvatar: mockUsers.trainer.avatar,
+    role: mockUsers.trainer.role,
+    gym: mockUsers.trainer.gym || 'FitnessCenter Pro',
+    content: "Crushed a killer upper body session with the team today. Proud of everyone's progress! 💪 #Strength #Consistency",
+    image: "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=800&h=600&fit=crop",
+    likes: 24,
+    likedByCurrentUser: false,
+    comments: [
+      {
+        id: 1,
+        userId: mockUsers.member.id,
+        userName: mockUsers.member.name,
+        userAvatar: mockUsers.member.avatar,
+        content: "Amazing session! Arms are on fire 🔥",
+        createdAt: new Date(Date.now() - 1000*60*30).toISOString()
+      }
+    ],
+    createdAt: new Date(Date.now() - 1000*60*60).toISOString()
+  },
+  {
+    id: 2,
+    userId: mockUsers.member.id,
+    userName: mockUsers.member.name,
+    userAvatar: mockUsers.member.avatar,
+    role: mockUsers.member.role,
+    gym: mockUsers.member.gym || 'FitnessCenter Pro',
+    content: "Day 12 of my workout streak. Feeling stronger every single day. Stay consistent!",
+    likes: 15,
+    comments: [
+      {
+        id: 1,
+        userId: mockUsers.trainer.id,
+        userName: mockUsers.trainer.name,
+        userAvatar: mockUsers.trainer.avatar,
+        content: "Proud of your dedication. Keep pushing!",
+        createdAt: new Date(Date.now() - 1000*60*20).toISOString()
+      }
+    ],
+    createdAt: new Date(Date.now() - 1000*60*90).toISOString()
+  },
+  {
+    id: 3,
+    userId: mockUsers.gym_owner.id,
+    userName: mockUsers.gym_owner.name,
+    userAvatar: mockUsers.gym_owner.avatar,
+    role: mockUsers.gym_owner.role,
+    gym: mockUsers.gym_owner.gym || 'FitnessCenter Pro',
+    content: "Excited to announce new equipment arriving next week! Get ready for upgraded leg day.",
+    likes: 42,
+    comments: [
+      {
+        id: 1,
+        userId: mockUsers.trainer.id,
+        userName: mockUsers.trainer.name,
+        userAvatar: mockUsers.trainer.avatar,
+        content: "Members are going to love this!",
+        createdAt: new Date(Date.now() - 1000*60*15).toISOString()
+      },
+      {
+        id: 2,
+        userId: mockUsers.member.id,
+        userName: mockUsers.member.name,
+        userAvatar: mockUsers.member.avatar,
+        content: "Can't wait!",
+        createdAt: new Date(Date.now() - 1000*60*10).toISOString()
+      }
+    ],
+    createdAt: new Date(Date.now() - 1000*60*120).toISOString()
+  }
+];

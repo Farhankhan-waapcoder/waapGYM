@@ -11,6 +11,7 @@ import {
   Calendar,
   BarChart3,
   Apple,
+  Image as ImageIcon,
   X
 } from "lucide-react";
 import { Button } from "../ui/button";
@@ -38,6 +39,7 @@ const navigationItems = {
   ],
   gym_owner: [
     { id: 'dashboard', label: 'Dashboard', icon: Home },
+    { id: 'media', label: 'Social Media', icon: ImageIcon },
     { id: 'gym-profile', label: 'Gym Profile', icon: Building },
     { id: 'trainers', label: 'Trainers', icon: UserCheck },
     { id: 'members', label: 'Members', icon: Users },
@@ -46,6 +48,7 @@ const navigationItems = {
   ],
   trainer: [
     { id: 'dashboard', label: 'Dashboard', icon: Home },
+    { id: 'media', label: 'Social Media', icon: ImageIcon },
     { id: 'members', label: 'My Members', icon: Users },
     { id: 'workouts', label: 'Workouts', icon: Dumbbell },
     { id: 'diet-plans', label: 'Diet Plans', icon: Apple },
@@ -54,6 +57,7 @@ const navigationItems = {
   ],
   member: [
     { id: 'dashboard', label: 'Dashboard', icon: Home },
+    { id: 'media', label: 'Social Media', icon: ImageIcon },
     { id: 'workouts', label: 'My Workouts', icon: Dumbbell },
     { id: 'diet', label: 'Diet Plan', icon: Apple },
     { id: 'competitions', label: 'Competitions', icon: Target },

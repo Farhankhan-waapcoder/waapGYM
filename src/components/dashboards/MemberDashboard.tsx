@@ -402,11 +402,11 @@ export function MemberDashboard({ user, profileUser, onLogout, onNavigate, onBac
         userRole="member"
         currentPage={currentPage}
         onNavigate={(page) => {
-          if (page === 'competitions' || page === 'leaderboard') {
+          if (page === 'competitions' || page === 'leaderboard' || page === 'media') {
             onNavigate(page); // delegate to router navigation
-          } else {
-            setCurrentPage(page);
+            return;
           }
+          setCurrentPage(page);
         }}
         userName={user.name}
         userAvatar={user.avatar}

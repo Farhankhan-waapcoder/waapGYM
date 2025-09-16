@@ -1,4 +1,4 @@
-import { useState } from 'react';
+// Consolidated React hooks import below (useState, useEffect)
 import { Header } from '../layout/Header';
 import { Sidebar } from '../layout/Sidebar';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
@@ -9,6 +9,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '.
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
 import { Users, Dumbbell, Apple, TrendingUp, Plus, Eye, Edit, Calendar, Phone, Mail, ArrowLeft } from 'lucide-react';
 import { mockMembers, mockWorkouts, mockDietPlans } from '../../data/mockData';
+
+import { useState, useEffect } from 'react';
 
 interface User {
   id: number;
@@ -32,6 +34,20 @@ interface TrainerDashboardProps {
 
 export function TrainerDashboard({ user, profileUser, onLogout, onNavigate, onBack, darkMode, onToggleDarkMode, viewingProfile }: TrainerDashboardProps) {
   const [currentPage, setCurrentPage] = useState('dashboard');
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 768) {
+        setSidebarOpen(true);
+      } else {
+        setSidebarOpen(false);
+      }
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
   
   // Use profileUser data when viewing someone's profile, otherwise use current user
   const displayUser = viewingProfile && profileUser ? profileUser : user;
@@ -591,12 +607,20 @@ export function TrainerDashboard({ user, profileUser, onLogout, onNavigate, onBa
 
   return (
     <div className="flex h-screen bg-background">
-      <Sidebar 
+      <Sidebar
         userRole="trainer"
         currentPage={currentPage}
-        onNavigate={setCurrentPage}
+        onNavigate={(page) => {
+          if (page === 'media') {
+            onNavigate('media');
+            return;
+          }
+          setCurrentPage(page);
+        }}
         userName={user.name}
         userAvatar={user.avatar}
+        isOpen={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
       />
       
       <div className="flex-1 flex flex-col overflow-hidden">
@@ -607,6 +631,12 @@ export function TrainerDashboard({ user, profileUser, onLogout, onNavigate, onBa
           onToggleDarkMode={onToggleDarkMode}
           title={viewingProfile ? `${displayUser.name}'s Dashboard` : "Trainer Dashboard"}
         />
+        {/* Mobile hamburger */}
+        <div className="md:hidden flex items-center gap-2 px-4 pt-2">
+          <Button variant="outline" size="sm" onClick={() => setSidebarOpen(true)}>
+            Menu
+          </Button>
+        </div>
         
         <main className="flex-1 overflow-auto p-6">
           <div className="max-w-7xl mx-auto">

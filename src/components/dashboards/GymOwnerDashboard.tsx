@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Header } from '../layout/Header';
 import { Sidebar } from '../layout/Sidebar';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
@@ -29,6 +29,20 @@ interface GymOwnerDashboardProps {
 
 export function GymOwnerDashboard({ user, onLogout, onNavigate, darkMode, onToggleDarkMode }: GymOwnerDashboardProps) {
   const [currentPage, setCurrentPage] = useState('dashboard');
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 768) {
+        setSidebarOpen(true);
+      } else {
+        setSidebarOpen(false);
+      }
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const gymStats = {
     totalMembers: 245,
@@ -434,22 +448,34 @@ export function GymOwnerDashboard({ user, onLogout, onNavigate, darkMode, onTogg
 
   return (
     <div className="flex h-screen bg-background">
-      <Sidebar 
+      <Sidebar
         userRole="gym_owner"
         currentPage={currentPage}
-        onNavigate={setCurrentPage}
+        onNavigate={(page) => {
+          if (page === 'media') {
+            onNavigate('media');
+            return;
+          }
+          setCurrentPage(page);
+        }}
         userName={user.name}
         userAvatar={user.avatar}
+        isOpen={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
       />
       
       <div className="flex-1 flex flex-col overflow-hidden">
-        <Header 
+        <Header
           user={user}
           onLogout={onLogout}
           darkMode={darkMode}
           onToggleDarkMode={onToggleDarkMode}
           title="Gym Owner Dashboard"
         />
+        {/* Mobile hamburger */}
+        <div className="md:hidden flex items-center gap-2 px-4 pt-2">
+          <Button variant="outline" size="sm" onClick={() => setSidebarOpen(true)}>Menu</Button>
+        </div>
         
         <main className="flex-1 overflow-auto p-6">
           <div className="max-w-7xl mx-auto">
