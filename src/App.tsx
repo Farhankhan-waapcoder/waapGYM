@@ -47,6 +47,15 @@ function DashboardRouter() {
       case 'leaderboard':
         navigate('/leaderboard');
         break;
+      case 'workouts':
+        navigate('/member/workouts');
+        break;
+      case 'diet':
+        navigate('/member/diet');
+        break;
+      case 'payments':
+        navigate('/member/payments');
+        break;
       case 'dashboard':
       case 'admin':
       case 'member':
@@ -141,6 +150,56 @@ function LeaderboardRoute() {
       onNavigate={viewNavigate}
       darkMode={darkMode}
       onToggleDarkMode={toggleDarkMode}
+    />
+  );
+}
+
+// Member sub-routes (workouts, diet, payments) reuse MemberDashboard with controlled page prop
+function MemberSubRoute({ page }: { page: string }) {
+  const { user, logout, darkMode, toggleDarkMode } = useAuth();
+  const navigate = useNavigate();
+  const viewNavigate = (view: string) => {
+    if (view.startsWith('profile-')) {
+      const [, type, id] = view.split('-');
+      navigate(`/profile/${type}/${id}`);
+      return;
+    }
+    switch (view) {
+      case 'competitions':
+        navigate('/competitions');
+        break;
+      case 'leaderboard':
+        navigate('/leaderboard');
+        break;
+      case 'media':
+        if (user?.gym) {
+          navigate(`/${user.gym.toLowerCase().replace(/[^a-z0-9]+/g,'-')}/media`);
+        } else {
+          navigate(`/fitnesscenter-pro/media`);
+        }
+        break;
+      case 'workouts':
+        navigate('/member/workouts');
+        break;
+      case 'diet':
+        navigate('/member/diet');
+        break;
+      case 'payments':
+        navigate('/member/payments');
+        break;
+      default:
+        navigate('/dashboard');
+    }
+  };
+  if (!user) return null;
+  return (
+    <MemberDashboard
+      user={user}
+      onLogout={logout}
+      darkMode={darkMode}
+      onToggleDarkMode={toggleDarkMode}
+      onNavigate={viewNavigate}
+      page={page}
     />
   );
 }
@@ -265,6 +324,9 @@ export default function App() {
             <Route path="/" element={<LandingRoute />} />
             <Route path="/auth" element={<AuthRoute />} />
             <Route path="/dashboard" element={<Protected><DashboardRouter /></Protected>} />
+            <Route path="/member/workouts" element={<Protected><MemberSubRoute page="workouts" /></Protected>} />
+            <Route path="/member/diet" element={<Protected><MemberSubRoute page="diet" /></Protected>} />
+            <Route path="/member/payments" element={<Protected><MemberSubRoute page="payments" /></Protected>} />
             <Route path="/competitions" element={<Protected><CompetitionRoute /></Protected>} />
             <Route path="/leaderboard" element={<Protected><LeaderboardRoute /></Protected>} />
             <Route path="/profile/:type/:id" element={<Protected><ProfileRouteWrapper /></Protected>} />

@@ -47,10 +47,16 @@ interface MemberDashboardProps {
   darkMode: boolean;
   onToggleDarkMode: () => void;
   viewingProfile?: boolean;
+  page?: string; // controlled current page from router (e.g. workouts, diet)
 }
 
-export function MemberDashboard({ user, profileUser, onLogout, onNavigate, onBack, darkMode, onToggleDarkMode, viewingProfile }: MemberDashboardProps) {
-  const [currentPage, setCurrentPage] = useState('dashboard');
+export function MemberDashboard({ user, profileUser, onLogout, onNavigate, onBack, darkMode, onToggleDarkMode, viewingProfile, page }: MemberDashboardProps) {
+  const [currentPage, setCurrentPage] = useState(page || 'dashboard');
+  // Sync internal state when controlled page prop changes
+  if (page && page !== currentPage) {
+    // lightweight sync without useEffect to avoid extra render loop since state change only when different
+    setCurrentPage(page);
+  }
   const [sidebarOpen, setSidebarOpen] = useState(false);
   
   // Use profileUser data when viewing someone's profile, otherwise use current user
@@ -402,8 +408,9 @@ export function MemberDashboard({ user, profileUser, onLogout, onNavigate, onBac
         userRole="member"
         currentPage={currentPage}
         onNavigate={(page) => {
-          if (page === 'competitions' || page === 'leaderboard' || page === 'media') {
-            onNavigate(page); // delegate to router navigation
+          // Pages to be routed: competitions, leaderboard, media, workouts, diet, payments
+          if (["competitions","leaderboard","media","workouts","diet","payments"].includes(page)) {
+            onNavigate(page);
             return;
           }
           setCurrentPage(page);
